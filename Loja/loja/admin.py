@@ -1,7 +1,6 @@
 from django.contrib import admin
+from .models import *  # Importa nossos models
 
-# Register your models here.
-from .models import * #imporata nossos models
-admin.site.register(Fabricante) #adiciona a interface do adm
+admin.site.register(Fabricante) # Registra Fabricante com o FabricanteAdmin
 admin.site.register(Categoria)
 admin.site.register(Produto)
