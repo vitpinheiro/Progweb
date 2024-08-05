@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 from loja.models import Produto
 from datetime import timedelta, datetime
 from django.utils import timezone
@@ -28,4 +28,9 @@ def list_produto_view(request, id=None):
         produtos = produtos.filter(id=id)
     print(produtos)
     print(promocao)
-    return HttpResponse('<h1>Produto de id %s!</h1>' % id)
+    # Adicione para definir o contexto e carregar o template
+    context = {
+    'produtos': produtos
+    }
+    return render(request, template_name='produto/produto.html',context=context, status=200)
+    # return HttpResponse('<h1>Produto de id %s!</h1>' % id)
