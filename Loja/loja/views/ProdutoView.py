@@ -94,7 +94,10 @@ def details_produto_view(request, id=None):
         produtos = produtos.filter(id=id)
     produto = produtos.first()
     print(produto)
-    context = {'produto': produto}
+    Fabricantes = Fabricante.objects.all()
+    Categorias = Categoria.objects.all()
+    context = {'produto': produto, 'fabricantes' : Fabricantes, 'categorias' : Categorias}
+    
     return render(request, template_name='produto/produto-details.html', context=context,
     status=200)
 
@@ -105,11 +108,14 @@ def delete_produto_view(request, id=None):
         produtos = produtos.filter(id=id)
     produto = produtos.first()
     print(produto)
-    context = {'produto': produto}
+    Fabricantes = Fabricante.objects.all()
+    Categorias = Categoria.objects.all()
+    context = {'produto': produto, 'fabricantes' : Fabricantes, 'categorias' : Categorias}
     return render(request, template_name='produto/produto-delete.html', context=context, status=200)
 
 # adicione a função que trata o postback da interface de exclusão
 def delete_produto_postback(request, id=None):
+    
 # Processa o post back gerado pela action
     if request.method == 'POST':
 # Salva dados editados
@@ -125,47 +131,62 @@ def delete_produto_postback(request, id=None):
     return redirect("/produto")
 
 def create_produto_view(request, id=None):
-    # Processa o post back gerado pela action
     if request.method == 'POST':
-        produto = request.POST.get("Produto")
+        produto_nome = request.POST.get("Produto")
         destaque = request.POST.get("destaque")
         promocao = request.POST.get("promocao")
         msgPromocao = request.POST.get("msgPromocao")
         preco = request.POST.get("preco")
-        image = request.FILES.get("image")  # Obtendo diretamente o arquivo
-        
+        image = request.FILES.get("image")
+        categoria_id = request.POST.get("CategoriaFk")
+        fabricante_id = request.POST.get("FabricanteFk")
+
         print("postback-create")
-        print(produto)
+        print(produto_nome)
         print(destaque)
         print(promocao)
         print(msgPromocao)
         print(preco)
         print(image)
-        
+        print(categoria_id)
+        print(fabricante_id)
+
         try:
             obj_produto = Produto()
-            obj_produto.Produto = produto
+            obj_produto.Produto = produto_nome
             obj_produto.destaque = (destaque is not None)
             obj_produto.promocao = (promocao is not None)
             if msgPromocao:
                 obj_produto.msgPromocao = msgPromocao
-            obj_produto.preco = 0
-            if preco:
-                obj_produto.preco = preco
+            obj_produto.preco = float(preco) if preco else 0
             obj_produto.criado_em = timezone.now()
             obj_produto.alterado_em = obj_produto.criado_em
 
             # Se for anexado arquivo, salva na pasta e guarda nome no objeto
             if image:
                 fs = FileSystemStorage()
-                filename = fs.save(image.name, image)  # Salvando o arquivo
-                obj_produto.image = filename  # Atribuindo o nome do arquivo ao objeto
+                filename = fs.save(image.name, image)
+                obj_produto.image = filename
+
+            # Associa categoria e fabricante
+            if categoria_id and categoria_id != "-1":
+                obj_produto.categoria_id = categoria_id
+            if fabricante_id and fabricante_id != "-1":
+                obj_produto.fabricante_id = fabricante_id
 
             obj_produto.save()
-            print(f"Produto {produto} salvo com sucesso")
+            print(f"Produto {produto_nome} salvo com sucesso")
         except Exception as e:
             print(f"Erro inserindo produto: {e}")
-        
+
         return redirect("/produto")
-    
-    return render(request, template_name='produto/produto-create.html', status=200)
+
+    else:
+        # Preparar dados para o formulário de criação
+        fabricantes = Fabricante.objects.all()
+        categorias = Categoria.objects.all()
+        context = {
+            'fabricantes': fabricantes,
+            'categorias': categorias
+        }
+        return render(request, 'produto/produto-create.html', context)
