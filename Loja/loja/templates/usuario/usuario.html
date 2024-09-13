@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Início{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div id="content">
+    <div class="container">
+        <div class="alert alert-info">
+            Usuários encontrados [{{ usuarios|length }}]
+        </div>
+        <!-- Tabela de usuários -->
+        <table class="table table-bordered">
+            <thead class="table-info">
+                <tr>
+                    <th>Usuário</th>
+                    <th>E-mail</th>
+                    <th>Aniversário</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                    <tr>
+                        <td>{{ usuario.user.username }}</td>
+                        <td>{{ usuario.user.email }}</td>
+                        <td>{{ usuario.aniversario }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/home.js' %}"></script>
+{% endblock %}

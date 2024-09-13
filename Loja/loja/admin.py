@@ -11,3 +11,4 @@ class ProdutoAdmin(admin.ModelAdmin):
 admin.site.register(Fabricante,FabricanteAdmin) # Registra Fabricante com o FabricanteAdmin
 admin.site.register(Categoria)
 admin.site.register(Produto,ProdutoAdmin)
+admin.site.register(Usuario)
