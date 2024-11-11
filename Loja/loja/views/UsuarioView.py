@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from loja.models import Usuario
 from loja.forms.UserUsuarioForm import UserUsuarioForm, UserForm
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def list_usuario_view(request, id=None):
     # Carrega somente usuários, não inclui os admin
     usuarios = Usuario.objects.filter(perfil=2)
