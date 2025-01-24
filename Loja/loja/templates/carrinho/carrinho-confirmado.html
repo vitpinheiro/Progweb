@@ -5,6 +5,73 @@
 
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
+<style>
+
+
+    .alert-info h3, .alert-info h5 {
+        font-weight: bold;
+    }
+    .product-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 0;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .product-row:last-child {
+        border-bottom: none;
+    }
+    .product-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .product-info div {
+        font-size: 16px;
+    }
+    .product-info .price, .product-info .total {
+        font-weight: bold;
+    }
+    .btn-custom {
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        text-align: center;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+    .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+    }
+    .mt-4 {
+        margin-top: 30px;
+    }
+    .product-name {
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .product-quantity, .product-price, .product-total {
+        font-size: 16px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -21,12 +88,33 @@
             <div class="alert alert-info">
                 <h5 class="mt-4">Total: R$ {{ carrinho.total|floatformat:2 }}</h5>
             </div>
+
+            <!-- Exibindo os produtos comprados -->
+            <div class="mt-4">
+                <div class="product-row" style="font-weight: bold;">
+                    <div class="col-md-4">Produto</div>
+                    <div class="col-md-2">Quantidade</div>
+                    <div class="col-md-2">Preço</div>
+                    <div class="col-md-2">Total</div>
+                </div>
+                
+                {% for item in carrinho.itens.all %}
+                    <div class="product-row">
+                        <div class="col-md-4 product-name">{{ item.produto.Produto }}</div>
+                        <div class="col-md-2 product-quantity">{{ item.quantidade }}</div>
+                        <div class="col-md-2 product-price">R$ {{ item.preco|floatformat:2 }}</div>
+                        <div class="col-md-2 product-total">R$ {{ item.total|floatformat:2 }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+
         {% else %}
             <div class="alert alert-warning mt-4" role="alert">
                 Seu carrinho não foi finalizado.
             </div>
             <a href="{% url 'home' %}" class="btn btn-primary mt-3">Ir à loja</a>
         {% endif %}
+        
         <div class="mt-4">
             <a href="{% url 'home' %}" class="btn btn-secondary">Voltar à loja</a>
         </div>

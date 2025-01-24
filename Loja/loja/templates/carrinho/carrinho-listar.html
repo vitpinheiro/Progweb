@@ -5,6 +5,29 @@
 
 {% block styles %}
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <style>
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+        .quantity-controls button {
+            width: 20px;
+            height: 20px;
+            padding: 0;
+            font-size: 18px;
+            line-height: 0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .quantity-controls button.btn-warning {
+            margin-right: 10px;
+        }
+        .quantity-controls button.btn-success {
+            margin-left: 8px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -23,13 +46,29 @@
             {% for item in itens %}
                 <div class="row">
                     <a class="col-md-4">{{ item.produto.Produto }}</a>
-                    <a class="col-md-2">{{ item.quantidade }}</a>
+                    <a class="col-md-2">
+                        <!-- Botões para diminuir e aumentar a quantidade -->
+                        <div class="quantity-controls">
+                            <form method="POST" action="{% url 'diminuir_quantidade' item.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm" style="width: 20px;;">-</button>
+                            </form>
+                            <span style="margin-left:8px;">{{ item.quantidade }}</span>
+                            <form method="POST" action="{% url 'aumentar_quantidade' item.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm">+</button>
+                            </form>
+                        </div>
+                    </a>
                     <a class="col-md-2">R$ {{ item.preco|floatformat:2 }}</a>
-                    <a class="col-md-2">R$ {{ item.total }}</a>
-                    <!-- Botão para excluir o item abaixo -->
-                    <a class="col-md-2"> <form method="POST" action="{% url 'remover_carrinhoitem' item.id%}" style="display:inline;"> {% csrf_token %} <button type="submit" class="btn
-                    btn-danger">Excluir</button> </form> </a>
-    <!-- Botão para excluir o item acima -->
+                    <a class="col-md-2">R$ {{ item.total|floatformat:2 }}</a>
+                    <!-- Botão para excluir o item -->
+                    <a class="col-md-2"> 
+                        <form method="POST" action="{% url 'remover_carrinhoitem' item.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger mb-4">Excluir</button>
+                        </form>
+                    </a>
                 </div>
             {% endfor %}
             <h5 class="mt-4">Total: R$ {{ carrinho.total|floatformat:2 }}</h5>

@@ -111,3 +111,18 @@ def remover_item_view(request, item_id):
     if carrinho_id == item.carrinho.id:
         item.delete()
     return redirect('/carrinho')
+
+
+
+def aumentar_quantidade_view(request, item_id):
+    item = CarrinhoItem.objects.get(id=item_id)
+    item.quantidade += 1
+    item.save()
+    return redirect('/carrinho')  
+
+def diminuir_quantidade_view(request, item_id):
+    item = CarrinhoItem.objects.get(id=item_id)
+    if item.quantidade > 1:
+        item.quantidade -= 1
+        item.save()
+    return redirect('/carrinho')
